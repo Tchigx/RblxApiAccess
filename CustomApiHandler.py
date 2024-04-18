@@ -8,7 +8,7 @@ def handle_endpoint():
     param1 = request.args.get('param1', default=None, type=str)
     param2 = request.args.get('param2', default=None, type=str)
     # You can set default values and types for the parameters
-
+#tesing mmwmwmj
     # Use the query parameters in your response or processing
     return jsonify({'param1': param1, 'param2': param2}), 200
 
