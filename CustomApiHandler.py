@@ -10,7 +10,7 @@ def handle_endpoint():
     param1 = request.args.get('param1', default=None, type=str)
     param2 = request.args.get('param2', default=None, type=str)
    # param3 = request.args.get('param2', default=None, type=str)
-   
+
     #FinalStr=""
     #if param1=="Decal":
     #    FinalStr=f"https://search.roblox.com/catalog/json?CreatorID={param2}&SortType=3&PageNumber=1&Category=8"
@@ -24,5 +24,11 @@ def handle_endpoint():
     # Use the query parameters in your response or processing
     return jsonify({'param1': param1, 'param2': param2}), 200
     
+
+@app.errorhandler(404)
+def page_not_found(e):
+    # your error handling logic here
+    return 'Page Not Found xd xd xd', 404  
+
 if __name__ == '__main__':
     app.run(debug=True)
