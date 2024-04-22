@@ -20,7 +20,7 @@ def handle_endpoint():
 
     page=requests.get(FinalStr)
     page=page.json()
-    print(page)
+   
     # Use the query parameters in your response or processing
     return jsonify(page), 200
     
