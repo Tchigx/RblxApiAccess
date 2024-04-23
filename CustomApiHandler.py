@@ -1,28 +1,37 @@
 from flask import Flask, jsonify, request
 import json 
 import requests
+import time 
 
 app = Flask(__name__)
 
 @app.route('/GetAssetBySearch', methods=['GET'])
 def handle_endpoint():
     # Access query parameters
-    param1 = request.args.get('TypeAsset', default=None, type=str)
+    param1 = request.args.get('Category', default=None, type=str)
     param2 = request.args.get('CreatorID', default=None, type=str)
    # param3 = request.args.get('param2', default=None, type=str)
+    AllData=[]
+    page_number=1
+    while True:
+        FinalStr=f"https://search.roblox.com/catalog/json?CreatorID={param2}&SortType=3&PageNumber={page_number}&Category={param1}"
+        page=requests.get(FinalStr)
+        StatusCode=page.status_code
 
-    FinalStr=""
-    if param1=="Decal":
-        FinalStr=f"https://search.roblox.com/catalog/json?CreatorID={param2}&SortType=3&PageNumber=1&Category=8"
-    elif param1=="Audio":
-        FinalStr=f"https://search.roblox.com/catalog/json?CreatorID={param2}&SortType=3&PageNumber=1&Category=9"
+        if StatusCode== 429:
+            break
     
+        page=page.json()
+        if not page:
 
-    page=requests.get(FinalStr)
-    page=page.json()
-   
+            break
+        
+        AllData.extend(page)
+        time.sleep(0.5)
+        page_number+=1
     # Use the query parameters in your response or processing
-    return jsonify(page), 200
+    print(StatusCode)
+    return jsonify(AllData), StatusCode
     
 
 @app.errorhandler(404)
