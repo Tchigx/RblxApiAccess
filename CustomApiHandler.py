@@ -37,25 +37,35 @@ def handle_endpoint():
 @app.route('/GetAssetByInv', methods=['GET'])
 def handle_endpoint2():
     # Access query parameters
-    param1 = request.args.get('Category', default=None, type=str)
-    param2 = request.args.get('CreatorID', default=None, type=str)
+    userId = request.args.get('userId', default=None, type=str)
+    assetTypeId = request.args.get('assetTypeId', default=None, type=str)
+    limit=request.args.get('limit', default=None, type=str)
     ChosenAsset = []
     cursor = ''
+    
+    if limit=="All":
+        limit=str(100)
+
     while True:
-        url=f"https://inventory.roblox.com/v2/users/{userId}/inventory/{assetTypeId}?limit=100&sortOrder=Desc&cursor={cursor}"
+        url=f"https://inventory.roblox.com/v2/users/{userId}/inventory/{assetTypeId}?limit={limit}&sortOrder=Desc&cursor={cursor}"
         response = requests.get(url)
         data = response.json()
         ChosenAsset.extend(data['data'])
         cursor = data['nextPageCursor']
         if not cursor:
             break
+
+        if int(limit)!=100:
+            #got the number of assets we wanted
+            break
     
+   
     return jsonify(ChosenAsset), response.status_code
 
 @app.errorhandler(404)
 def page_not_found(e):
     # your error handling logic here
-    return 'Page Not Found xd xd xd', 404  
+    return 'Message from seismic that something went wrong....', 404  
 
 if __name__ == '__main__':
     app.run(debug=True)
