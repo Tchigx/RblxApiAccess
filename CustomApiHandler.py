@@ -30,9 +30,27 @@ def handle_endpoint():
         time.sleep(0.5)
         page_number+=1
     # Use the query parameters in your response or processing
-    print(StatusCode)
+    
     return jsonify(AllData), StatusCode
     
+
+@app.route('/GetAssetByInv', methods=['GET'])
+def handle_endpoint2():
+    # Access query parameters
+    param1 = request.args.get('Category', default=None, type=str)
+    param2 = request.args.get('CreatorID', default=None, type=str)
+    ChosenAsset = []
+    cursor = ''
+    while True:
+        url=f"https://inventory.roblox.com/v2/users/{userId}/inventory/{assetTypeId}?limit=100&sortOrder=Desc&cursor={cursor}"
+        response = requests.get(url)
+        data = response.json()
+        ChosenAsset.extend(data['data'])
+        cursor = data['nextPageCursor']
+        if not cursor:
+            break
+    
+    return jsonify(ChosenAsset), response.status_code
 
 @app.errorhandler(404)
 def page_not_found(e):
