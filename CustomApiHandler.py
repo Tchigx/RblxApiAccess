@@ -40,6 +40,7 @@ def handle_endpoint2():
     userId = request.args.get('userId', default=None, type=str)
     assetTypeId = request.args.get('assetTypeId', default=None, type=str)
     limit=request.args.get('limit', default=None, type=str)
+    MySecondTime=request.args.get('MySecondTime', default=None, type=str)
     ChosenAsset = []
     cursor = ''
     
@@ -52,13 +53,13 @@ def handle_endpoint2():
         data = response.json()
         ChosenAsset.extend(data['data'])
         cursor = data['nextPageCursor']
-        if not cursor:
+        if not cursor or MySecondTime=="True":
             break
 
         if int(limit)!=100:
             #got the number of assets we wanted
             break
-    
+         
    
     return jsonify(ChosenAsset), response.status_code
 
